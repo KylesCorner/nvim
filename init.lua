@@ -7,6 +7,13 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- disable netrw for nvim-tree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- optionally enable 24-bit colour
+vim.opt.termguicolors = true
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -163,7 +170,37 @@ require('lazy').setup({
     },
   },
   {
-    -- TODO vimtex keybinds and labeling
+    'nvim-tree/nvim-tree.lua',
+    init = function()
+      local api = require 'nvim-tree.api'
+
+      local function opts(desc)
+        return { desc = 'nvim-tree: ' .. desc, noremap = true, silent = true, nowait = true }
+      end
+
+      -- custom mappings
+      vim.keymap.set('n', '<leader>er', api.tree.change_root_to_parent, opts 'Up')
+      vim.keymap.set('n', '<leader>eh', api.tree.toggle_help, opts 'Help')
+      vim.keymap.set('n', '<leader>ee', api.tree.toggle, opts 'Toggle')
+      vim.keymap.set('n', '<leader>ef', api.tree.find_file, opts 'Find')
+    end,
+
+    opts = {
+      sort = {
+        sorter = 'case_sensitive',
+      },
+      view = {
+        width = 30,
+      },
+      renderer = {
+        group_empty = true,
+      },
+      filters = {
+        dotfiles = true,
+      },
+    },
+  },
+  {
     'lervag/vimtex',
     lazy = false, -- we don't want to lazy load VimTeX
     -- tag = "v2.15", -- uncomment to pin to a specific release
@@ -246,6 +283,7 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>l', group = '[L]atex', mode = { 'n', 'v' } },
         { '<leader>b', group = 'De[B]uger', mode = { 'n', 'v' } },
+        { '<leader>e', group = 'File [E]xplorer' },
       },
     },
   },
