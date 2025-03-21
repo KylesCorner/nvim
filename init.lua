@@ -104,6 +104,7 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<leader>e', ':Neotree reveal<CR>', { desc = 'Neotree Toggle' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -169,37 +170,37 @@ require('lazy').setup({
       },
     },
   },
-  {
-    'nvim-tree/nvim-tree.lua',
-    init = function()
-      local api = require 'nvim-tree.api'
-
-      local function opts(desc)
-        return { desc = 'nvim-tree: ' .. desc, noremap = true, silent = true, nowait = true }
-      end
-
-      -- custom mappings
-      vim.keymap.set('n', '<leader>er', api.tree.change_root_to_parent, opts 'Up')
-      vim.keymap.set('n', '<leader>eh', api.tree.toggle_help, opts 'Help')
-      vim.keymap.set('n', '<leader>ee', api.tree.toggle, opts 'Toggle')
-      vim.keymap.set('n', '<leader>ef', api.tree.find_file, opts 'Find')
-    end,
-
-    opts = {
-      sort = {
-        sorter = 'case_sensitive',
-      },
-      view = {
-        width = 30,
-      },
-      renderer = {
-        group_empty = true,
-      },
-      filters = {
-        dotfiles = true,
-      },
-    },
-  },
+  -- {
+  --   'nvim-tree/nvim-tree.lua',
+  --   init = function()
+  --     local api = require 'nvim-tree.api'
+  --
+  --     local function opts(desc)
+  --       return { desc = 'nvim-tree: ' .. desc, noremap = true, silent = true, nowait = true }
+  --     end
+  --
+  --     -- custom mappings
+  --     vim.keymap.set('n', '<leader>er', api.tree.change_root_to_parent, opts 'Up')
+  --     vim.keymap.set('n', '<leader>eh', api.tree.toggle_help, opts 'Help')
+  --     vim.keymap.set('n', '<leader>ee', api.tree.toggle, opts 'Toggle')
+  --     vim.keymap.set('n', '<leader>ef', api.tree.find_file, opts 'Find')
+  --   end,
+  --
+  --   opts = {
+  --     sort = {
+  --       sorter = 'case_sensitive',
+  --     },
+  --     view = {
+  --       width = 30,
+  --     },
+  --     renderer = {
+  --       group_empty = true,
+  --     },
+  --     filters = {
+  --       dotfiles = true,
+  --     },
+  --   },
+  -- },
   {
     'lervag/vimtex',
     lazy = false, -- we don't want to lazy load VimTeX
@@ -942,11 +943,11 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
