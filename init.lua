@@ -123,7 +123,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 -- Filetypes to enable spellcheck
-local spell_types = { 'text', 'plaintex', 'typst', 'gitcommit', 'markdown' }
+local spell_types = { 'text', 'plaintex', 'typst', 'gitcommit', 'markdown', 'tex' }
 -- Create an augroup for spellcheck to group related autocommands
 vim.api.nvim_create_augroup('Spellcheck', { clear = true })
 -- Create an autocommand to enable spellcheck for specified file types
