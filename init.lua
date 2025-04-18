@@ -1,8 +1,23 @@
+-- File template support
+require 'templates'
+
+-- R config
+-- Set these before the plugin is loaded (e.g., in init.lua or lazy config)
+-- vim.g.R_assign = 0
+-- vim.g.R_auto_start = 0
+-- vim.g.R_clear_line = 0
+-- vim.g.R_hl_term = 0
+-- vim.g.R_rnoweb_chunk = ''
+-- vim.g.R_rnoweb_comment = ''
+-- vim.g.R_rmd_chunk = ''
+-- vim.g.R_rmd_comment = ''
+
+--
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.maplocalleader = '\\'
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
@@ -40,6 +55,10 @@ vim.opt.clipboard = 'unnamedplus'
 
 -- Set global spell option to false initially to disable it for all file types
 vim.opt.spell = false
+
+-- set file textwidth to be 100
+-- NOTE: This applies to every file.
+vim.opt.tw = 100
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -122,6 +141,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- Trigger when opening a new file (e.g., `nvim filename.tex`)
+vim.api.nvim_create_autocmd('FileType', {
+  callback = function()
+    if vim.fn.line '$' == 1 and vim.fn.getline(1) == '' then
+      vim.defer_fn(function()
+        require('templates').prompt_and_insert_template()
+      end, 100)
+    end
+  end,
+})
 -- Filetypes to enable spellcheck
 local spell_types = { 'text', 'plaintex', 'typst', 'gitcommit', 'markdown', 'tex' }
 -- Create an augroup for spellcheck to group related autocommands
@@ -185,6 +215,67 @@ require('lazy').setup({
       },
     },
   },
+  {
+    'R-nvim/R.nvim',
+    -- Only required if you also set defaults.lazy = true
+    lazy = false,
+    -- R.nvim is still young and we may make some breaking changes from time
+    -- to time (but also bug fixes all the time). If configuration stability
+    -- is a high priority for you, pin to the latest minor version, but unpin
+    -- it and try the latest version before reporting an issue:
+    -- version = "~0.1.0"
+    config = function()
+      -- Create a table with the options to be passed to setup()
+      ---@type RConfigUserOpts
+      local opts = {
+        hook = {
+          on_filetype = function()
+            vim.api.nvim_buf_set_keymap(0, 'n', '<Enter>', '<Plug>RDSendLine', {})
+            vim.api.nvim_buf_set_keymap(0, 'v', '<Enter>', '<Plug>RSendSelection', {})
+          end,
+        },
+        R_args = { '--quiet', '--no-save' },
+        min_editor_width = 72,
+        rconsole_width = 78,
+        objbr_mappings = { -- Object browser keymap
+          c = 'class', -- Call R functions
+          ['<localleader>gg'] = 'head({object}, n = 15)', -- Use {object} notation to write arbitrary R code.
+          v = function()
+            -- Run lua functions
+            require('r.browser').toggle_view()
+          end,
+        },
+        disable_cmds = {
+          'RClearConsole',
+          'RCustomStart',
+          'RSPlot',
+          'RSaveClose',
+        },
+      }
+      -- Check if the environment variable "R_AUTO_START" exists.
+      -- If using fish shell, you could put in your config.fish:
+      -- alias r "R_AUTO_START=true nvim"
+      if vim.env.R_AUTO_START == 'true' then
+        opts.auto_start = 'on startup'
+        opts.objbr_auto_start = true
+      end
+      require('r').setup(opts)
+    end,
+  },
+  {
+    'R-nvim/cmp-r',
+    {
+      'hrsh7th/nvim-cmp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-nvim-lsp',
+      config = function()
+        require('cmp').setup { sources = { { name = 'cmp_r' } } }
+        require('cmp_r').setup {}
+      end,
+    },
+  },
+
   -- {
   --   'nvim-tree/nvim-tree.lua',
   --   init = function()
@@ -290,16 +381,21 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { '<leader>l', group = '[L]atex', mode = { 'n', 'v' } },
-        { '<leader>b', group = 'De[B]uger', mode = { 'n', 'v' } },
-        { '<leader>e', group = 'File [E]xplorer' },
+        { '<leader>c', group = '[c]ode', mode = { 'n', 'x' } },
+        { '<leader>d', group = '[d]ocument' },
+        { '<leader>k', group = 'file [k]nit' },
+        { '<leader>s', group = '[s]earch' },
+        { '<leader>w', group = '[w]orkspace' },
+        { '<leader>t', group = '[t]oggle' },
+        { '<leader>h', group = 'Git [h]unk', mode = { 'n', 'v' } },
+        { '<leader>l', group = '[l]atex', mode = { 'n', 'v' } },
+        { '<leader>b', group = 'De[b]uger', mode = { 'n', 'v' } },
+        { '<leader>e', group = 'File [e]xplorer' },
+        { '<leader>r', group = '[r]ename' },
+        { '<localleader>r', group = '[r] actions' },
+        { '<localleader>c', group = 'r [c]ode block' },
+        { '<localleader>k', group = '[k]nit file' },
+        { '<localleader>g', group = '[g]oto chunk' },
       },
     },
   },
@@ -535,7 +631,7 @@ require('lazy').setup({
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -562,7 +658,7 @@ require('lazy').setup({
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
@@ -927,7 +1023,25 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'java' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'java',
+        'r',
+        'yaml',
+        'latex',
+        'csv',
+        'rnoweb',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
