@@ -1,0 +1,17 @@
+---
+title:  __FILENAME__
+author: __AUTHOR__
+output: pdf_document
+date: __DATE__
+---
+
+# Introduction
+
+This is an R Markdown file.
+
+## Code Example
+
+```{r}
+# Example R code chunk
+summary(c(1, 2, 3, 4, 5))
+

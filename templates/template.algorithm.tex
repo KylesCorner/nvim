@@ -1,0 +1,65 @@
+
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{latexsym,amsfonts,amssymb,amsthm,amsmath,graphicx,algpseudocode,tikz,listings}
+\usepackage[shortlabels]{enumitem}
+
+\setlength{\parindent}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.8in}
+\setlength{\topmargin}{0in}
+\setlength{\headheight}{18pt}
+
+\newenvironment{SafeTikz}
+  {\noindent\ignorespaces%
+   \begin{tikzpicture}[node distance=0pt]}
+  {\end{tikzpicture}%
+   \ignorespacesafterend}
+
+% Macro to draw a vertical stack from comma-separated values
+\newcommand{\drawstack}[1]{%
+  \begin{SafeTikz}
+    \foreach \elem [count=\i] in {#1} {
+      \node[draw, minimum width=2cm, minimum height=1cm, anchor=south] (n\i) at (0, \i - 1) {\elem};
+    }
+  \end{SafeTikz}
+}
+
+
+\title{CSCI XXX Weekly Homework X}
+
+\author{
+  __AUTHOR__
+  \and
+  LastName2, FirstName2
+  \and
+  LastName3, FirstName3
+}
+
+\begin{document}
+
+\maketitle
+
+\section*{Stack Test}
+\drawstack{A, B, C, D}
+
+\begin{algorithmic}
+\State $i \gets 10$
+\If{$i\geq 5$} 
+    \State $i \gets i-1$
+\Else
+    \If{$i\leq 3$}
+        \State $i \gets i+2$
+    \EndIf
+\EndIf 
+\end{algorithmic}
+
+\begin{lstlisting}[language=python]
+def foo(bar):
+	print(bar)
+	
+\end{lstlisting}
+
+\end{document}

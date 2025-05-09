@@ -1,0 +1,10 @@
+# __FILENAME__
+# Author: __AUTHOR__
+# Date: __DATE__
+
+def main():
+    print("Hello, world!")
+
+if __name__ == "__main__":
+    main()
+
