@@ -68,5 +68,5 @@ Custom leader bindings (`<leader>`) and filetype-specific mappings for:
 1. Clone this repo into your Neovim config path:
 
 ```sh
-git clone https://github.com/yourusername/nvim-config ~/.config/nvim
+git clone https://github.com/KylesCorner/nvim ~/.config/nvim
 ```
