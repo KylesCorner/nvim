@@ -1,7 +1,7 @@
 -- colorscheme.lua
 -- Author: Kyle Krstulich
 -- Date: 2025-05-08
-
+-- Theme toggle between 'onedark' and another theme
 return {
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
@@ -15,15 +15,16 @@ return {
       -- Like many other themes, this one has different styles, and you could load
       require('onedark').setup {
         -- Main options --
-        style = 'warmer', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
+        style = 'darker', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
         transparent = false, -- Show/hide background
         term_colors = true, -- Change terminal color as per the selected theme style
         ending_tildes = false, -- Show the end-of-buffer tildes. By default they are hidden
         cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
 
         -- toggle theme style ---
-        toggle_style_key = nil, -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
-        toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
+        toggle_style_key = '<leader>tt', -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
+        -- toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
+        toggle_style_list = { 'warm', 'light', 'darker' }, -- List of styles to toggle between
 
         -- Change code style ---
         -- Options are italic, bold, underline, none
@@ -42,9 +43,8 @@ return {
         },
 
         -- Custom Highlights --
-        colors = {}, -- Override default colors
-        highlights = {}, -- Override highlight groups
-
+        colors = {},
+        highlights = {},
         -- Plugins Config --
         diagnostics = {
           darker = true, -- darker colors for diagnostic
