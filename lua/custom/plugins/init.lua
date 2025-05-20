@@ -7,4 +7,5 @@ return {
   require 'custom.plugins.r',
   require 'custom.plugins.jupyter_notebook',
   require 'custom.plugins.markdown',
+  require 'custom.plugins.obsidian',
 }
