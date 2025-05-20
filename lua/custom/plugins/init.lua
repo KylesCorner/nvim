@@ -6,4 +6,5 @@ return {
   require 'custom.plugins.latex',
   require 'custom.plugins.r',
   require 'custom.plugins.jupyter_notebook',
+  require 'custom.plugins.markdown',
 }
