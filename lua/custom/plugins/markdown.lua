@@ -5,8 +5,8 @@
 return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
@@ -51,11 +51,11 @@ return {
       gitcommit = {
         enabled = true,
         query = [[
-                ((message) @injection.content
-                    (#set! injection.combined)
-                    (#set! injection.include-children)
-                    (#set! injection.language "markdown"))
-            ]],
+                  ((message) @injection.content
+                      (#set! injection.combined)
+                      (#set! injection.include-children)
+                      (#set! injection.language "markdown"))
+              ]],
       },
     },
     patterns = {
@@ -342,7 +342,7 @@ return {
       -- Turn on / off list bullet rendering
       enabled = true,
       -- Additional modes to render list bullets
-      render_modes = false,
+      render_modes = true,
       -- Replaces '-'|'+'|'*' of 'list_item'.
       -- If the item is a 'checkbox' a conceal is used to hide the bullet instead.
       -- Output is evaluated depending on the type.
@@ -362,10 +362,10 @@ return {
       -- Output is evaluated depending on the type.
       -- | function | `value(context)` |
       -- | integer  | `value`          |
-      left_pad = 0,
+      left_pad = 10,
       -- Padding to add to the right of bullet point.
       -- Output is evaluated using the same logic as 'left_pad'.
-      right_pad = 0,
+      right_pad = 10,
       -- Highlight for the bullet icon.
       -- Output is evaluated using the same logic as 'icons'.
       highlight = 'RenderMarkdownBullet',
@@ -401,17 +401,17 @@ return {
         -- Highlight for item associated with checked checkbox.
         scope_highlight = nil,
       },
-        -- Define custom checkbox states, more involved, not part of the markdown grammar.
-        -- As a result this requires neovim >= 0.10.0 since it relies on 'inline' extmarks.
-        -- The key is for healthcheck and to allow users to change its values, value type below.
-        -- | raw             | matched against the raw text of a 'shortcut_link'           |
-        -- | rendered        | replaces the 'raw' value when rendering                     |
-        -- | highlight       | highlight for the 'rendered' icon                           |
-        -- | scope_highlight | optional highlight for item associated with custom checkbox |
-        -- stylua: ignore
-        custom = {
-            todo = { raw = '[-]', rendered = '󰥔 ', highlight = 'RenderMarkdownTodo', scope_highlight = nil },
-        },
+          -- Define custom checkbox states, more involved, not part of the markdown grammar.
+          -- As a result this requires neovim >= 0.10.0 since it relies on 'inline' extmarks.
+          -- The key is for healthcheck and to allow users to change its values, value type below.
+          -- | raw             | matched against the raw text of a 'shortcut_link'           |
+          -- | rendered        | replaces the 'raw' value when rendering                     |
+          -- | highlight       | highlight for the 'rendered' icon                           |
+          -- | scope_highlight | optional highlight for item associated with custom checkbox |
+          -- stylua: ignore
+          custom = {
+              todo = { raw = '[-]', rendered = '󰥔 ', highlight = 'RenderMarkdownTodo', scope_highlight = nil },
+          },
     },
     quote = {
       -- Turn on / off block quote & callout rendering.
@@ -466,15 +466,15 @@ return {
       padding = 1,
       -- Minimum column width to use for padded or trimmed cell.
       min_width = 0,
-        -- Characters used to replace table border.
-        -- Correspond to top(3), delimiter(3), bottom(3), vertical, & horizontal.
-        -- stylua: ignore
-        border = {
-            '┌', '┬', '┐',
-            '├', '┼', '┤',
-            '└', '┴', '┘',
-            '│', '─',
-        },
+          -- Characters used to replace table border.
+          -- Correspond to top(3), delimiter(3), bottom(3), vertical, & horizontal.
+          -- stylua: ignore
+          border = {
+              '┌', '┬', '┐',
+              '├', '┼', '┤',
+              '└', '┴', '┘',
+              '│', '─',
+          },
       -- Always use virtual lines for table borders instead of attempting to use empty lines.
       -- Will be automatically enabled if indentation module is enabled.
       border_virtual = true,

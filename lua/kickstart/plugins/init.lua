@@ -15,4 +15,7 @@ return {
   require 'kickstart.plugins.telescope',
   require 'kickstart.plugins.treesitter',
   require 'kickstart.plugins.colorscheme',
+  -- require 'kickstart.plugins.which-key',
+  require 'kickstart.plugins.todo-comments',
+  require 'kickstart.plugins.mini',
 }

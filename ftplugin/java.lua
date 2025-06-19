@@ -1,5 +1,5 @@
-local path_to_jdtls = '/home/kyle/Other Software/jdt-language-server-1.46.0-202502271940/bin/jdtls'
-local path_to_debug = vim.fn.expand '~/Other Software/java-debug-0.53.1/com.microsoft.java.debug.plugin/target/'
+local path_to_jdtls = '/home/kyle/opt/jdt-language-server-1.46.0-202502271940/bin/jdtls'
+local path_to_debug = vim.fn.expand '~/opt/java-debug-0.53.1/com.microsoft.java.debug.plugin/target/'
 
 local config = {
   cmd = { path_to_jdtls },
