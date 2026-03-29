@@ -52,7 +52,7 @@ return {
         { '<leader>w', group = '[w]orkspace' },
         { '<leader>t', group = '[t]oggle' },
         { '<leader>h', group = 'Git [h]unk', mode = { 'n', 'v' } },
-        { '<localleader>l', group = '[l]atex', mode = { 'n', 'v' } },
+        { '<localleader>l', group = '[l]aTeX tools', mode = { 'n', 'v' } },
         { '<localleader>m', group = '[m]agma', mode = { 'n', 'v' } },
         { '<leader>b', group = 'De[b]uger', mode = { 'n', 'v' } },
         { '<leader>e', group = 'File [e]xplorer' },
