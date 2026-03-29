@@ -42,10 +42,10 @@ vim.opt.spell = false
 
 -- set file textwidth to be 100
 -- NOTE: This applies to every file.
-vim.opt.tw = 180
+--vim.opt.tw = 180
 
 -- Enable break indent
-vim.opt.breakindent = true
+-- vim.opt.breakindent = true
 
 -- Save undo history
 vim.opt.undofile = true
@@ -84,6 +84,17 @@ vim.opt.scrolloff = 10
 
 --
 
+-- Load LSP configuration first
+-- require("Arduino-Nvim.lsp").setup()
+
+-- Set up Arduino file type detection
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = 'arduino',
+--   callback = function()
+--     require 'plugins.arduino'
+--   end,
+-- })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -114,7 +125,7 @@ vim.api.nvim_create_autocmd('BufNewFile', {
   callback = function()
     if vim.fn.line '$' == 1 and vim.fn.getline(1) == '' then
       -- File template support
-      M = require 'custom.plugins.templates'
+      M = require 'plugins.templates'
       vim.defer_fn(function()
         M.prompt_and_insert_template()
       end, 100)
@@ -176,9 +187,9 @@ require('lazy').setup({
   },
 
   --
-  require 'custom.keymaps',
-  require 'custom.plugins',
-  require 'kickstart.plugins',
+  require 'plugins',
+  require 'core',
+  require 'keymaps',
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the

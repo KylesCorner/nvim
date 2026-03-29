@@ -3,6 +3,9 @@
 -- Date: 2025-05-08
 
 -- Function: Main entry point
+-- require 'os'
+-- local roslyn_path = vim.fn.expand '~/csharp-ls/content/LanguageServer/alpine-x64/Microsoft.CodeAnalysis.LanguageServer.dll'
+
 return {
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -19,7 +22,25 @@ return {
   {
     'mfussenegger/nvim-jdtls',
   },
-
+  -- for C# language server
+  -- {
+  --   'seblyng/roslyn.nvim',
+  --   ---@module 'roslyn.config'
+  --   ---@type RoslynNvimConfig
+  --   opts = {
+  --     cmd = {
+  --       'dotnet',
+  --       roslyn_path,
+  --       '--logLevel=Information',
+  --       '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()),
+  --     },
+  --     -- cmd = { os.getenv '/home/kyle/.dotnet/tools/OmniSharp/OmniSharp', '--languageserver', '--hostPID', tostring(vim.fn.getpid()) },
+  --     -- filetypes = { 'cs' },
+  --     -- root_dir = function(fname)
+  --     --   return vim.loop.cwd()
+  --     -- end,
+  --   },
+  -- },
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
@@ -185,14 +206,29 @@ return {
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      --
       local servers = {
         texlab = {},
         clangd = {},
+        -- arduino_language_server = {
+        --   cmd = {
+        --     'arduino-language-server',
+        --     '-cli',
+        --     'arduino-cli',
+        --     '-cli-config',
+        --     vim.fn.expand '~/.arduino15/arduino-cli.yaml',
+        --     '-fqbn',
+        --     'arduino:avr:uno',
+        --     '-clangd',
+        --     'clangd',
+        --   },
+        -- },
         -- jdtls = { -- Java
         --   opts = {},
         -- },
         -- gopls = {},
-        pyright = {},
+        -- basedpyright = {},
+        jedi_language_server = {}, -- python lsp
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -235,6 +271,7 @@ return {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'black', -- Used t format python code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

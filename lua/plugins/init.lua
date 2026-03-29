@@ -3,9 +3,9 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-  require 'custom.plugins.latex',
-  require 'custom.plugins.r',
-  require 'custom.plugins.jupyter_notebook',
-  require 'custom.plugins.markdown',
-  require 'custom.plugins.obsidian',
+  require 'plugins.latex',
+  require 'plugins.r',
+  require 'plugins.jupyter_notebook',
+  require 'plugins.markdown',
+  require 'plugins.obsidian',
 }

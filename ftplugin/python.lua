@@ -1,6 +1,8 @@
 -- /ftplugin/python.lua
 
 -- Set indentation settings
+vim.opt.breakindent = true
+vim.opt.wrap = true
 vim.bo.tabstop = 4
 vim.bo.shiftwidth = 4
 vim.bo.expandtab = true

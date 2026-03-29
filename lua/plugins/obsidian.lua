@@ -1,34 +1,3 @@
--- local opts = { noremap = true, silent = true }
---
--- -- Map under <localleader>o
--- local keymap = vim.keymap.set
---
--- -- Obsidian keybindings
--- vim.keymap.set('n', '<localleader>oo', ':ObsidianOpen<CR>', opts)
--- keymap('n', '<localleader>on', ':ObsidianNew<CR>', opts)
--- keymap('n', '<localleader>oq', ':ObsidianQuickSwitch<CR>', opts)
--- keymap('n', '<localleader>ol', ':ObsidianFollowLink<CR>', opts)
--- keymap('n', '<localleader>ob', ':ObsidianBacklinks<CR>', opts)
--- keymap('n', '<localleader>ot', ':ObsidianTags<CR>', opts)
--- keymap('n', '<localleader>od', ':ObsidianToday<CR>', opts)
--- keymap('n', '<localleader>oy', ':ObsidianYesterday<CR>', opts)
--- keymap('n', '<localleader>om', ':ObsidianTomorrow<CR>', opts)
--- keymap('n', '<localleader>oa', ':ObsidianDailies<CR>', opts)
--- keymap('n', '<localleader>op', ':ObsidianPasteImg<CR>', opts)
--- keymap('n', '<localleader>or', ':ObsidianRename<CR>', opts)
--- keymap('n', '<localleader>ox', ':ObsidianTOC<CR>', opts)
--- keymap('n', '<localleader>os', ':ObsidianSearch<CR>', opts)
--- keymap('n', '<localleader>otm', ':ObsidianTemplate<CR>', opts)
--- keymap('n', '<localleader>ow', ':ObsidianWorkspace<CR>', opts)
--- keymap('n', '<localleader>oln', ':ObsidianLinks<CR>', opts)
--- keymap('n', '<localleader>oc', ':ObsidianToggleCheckbox<CR>', opts)
--- keymap('n', '<localleader>oft', ':ObsidianNewFromTemplate<CR>', opts)
---
--- -- Visual mode mappings
--- keymap('v', '<localleader>ol', ':ObsidianLink<CR>', opts)
--- keymap('v', '<localleader>oln', ':ObsidianLinkNew<CR>', opts)
--- keymap('v', '<localleader>oe', ':ObsidianExtractNote<CR>', opts)
-
 return {
   'epwalsh/obsidian.nvim',
   version = '*', -- recommended, use latest release instead of latest commit
@@ -60,10 +29,10 @@ return {
         name = 'work',
         path = '~/Vaults/work',
       },
-      -- {
-      --   name = 'work',
-      --   path = '~/Vaults/school',
-      -- },
+      {
+        name = 'school',
+        path = '~/Vaults/school',
+      },
     },
 
     daily_notes = {
@@ -71,9 +40,9 @@ return {
       template = 'daily.md',
     },
 
-    templates = {
-      folder = 'Templates',
-    },
+    -- templates = {
+    --   folder = 'Templates',
+    -- },
 
     ui = {
       enable = true,
