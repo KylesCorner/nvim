@@ -54,6 +54,7 @@ return {
         { '<leader>h', group = 'Git [h]unk', mode = { 'n', 'v' } },
         { '<localleader>l', group = '[l]aTeX tools', mode = { 'n', 'v' } },
         { '<localleader>m', group = '[m]agma', mode = { 'n', 'v' } },
+        { '<localleader>p', group = '[p]latformIO', mode = { 'n', 'v' } },
         { '<leader>b', group = 'De[b]uger', mode = { 'n', 'v' } },
         { '<leader>e', group = 'File [e]xplorer' },
         { '<leader>r', group = '[r]ename' },
