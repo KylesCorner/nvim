@@ -11,6 +11,19 @@ local ts_utils = require 'nvim-treesitter.ts_utils'
 
 local M = {}
 
+-- to check if c project is a platformIO project
+function M.find_pio_root(bufnr)
+  bufnr = bufnr or 0
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  if bufname == '' then
+    return nil
+  end
+
+  local start = vim.fs.dirname(bufname)
+  local ini = vim.fs.find('platformio.ini', { upward = true, path = start })[1]
+  return ini and vim.fs.dirname(ini) or nil
+end
+
 -- Find nodes by type
 function find_node_by_type(expr, type_name)
   while expr do

@@ -63,6 +63,7 @@ return {
         { '<localleader>k', group = '[k]nit file' },
         { '<localleader>e', group = '[e]dit utilities' },
         { '<localleader>o', group = '[o]bsidian' },
+        { '<localleader>q', group = '[q]uatro' },
       },
     },
   },

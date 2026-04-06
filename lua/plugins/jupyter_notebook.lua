@@ -1,107 +1,94 @@
--- jupyter_notebook.lua
--- Author: Kyle Krstulich
--- Date: 2025-05-08
---[[
-Edit the magma-nvim plugin file at:
-
-~/.local/share/nvim/lazy/magma-nvim/rplugin/python3/magma/outputbuffer.py
-Find the line (around line 116):
-
-self.display_window = self.nvim.funcs.nvim_open_win(
-Change the block that starts like this:
-
-self.display_window = self.nvim.funcs.nvim_open_win(
-    self.buffer.number, False, {
-        "relative": "editor",
-        "row": 2,
-        "col": 10,
-        "width": 50,
-        "height": 10,
-        # Add the missing line below:
-        "style": "minimal"
-    })
-Add "style": "minimal" to the window options dict if it’s missing.
-
-Then restart Neovim and run:
-
-:UpdateRemotePlugins
-And restart Neovim again.
---]]
-
--- Run Python code between triple backticks with Magma
-function RunMagmaBlock()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local line_nr = cursor[1]
-
-  local start_line = nil
-  local end_line = nil
-
-  -- Search upward for first ```
-  for i = line_nr, 1, -1 do
-    local line = vim.api.nvim_buf_get_lines(bufnr, i - 1, i, false)[1]
-    if line:match '^```python' then
-      start_line = i
-      break
-    end
-  end
-
-  -- Search downward for closing ```
-  local total_lines = vim.api.nvim_buf_line_count(bufnr)
-  for i = line_nr + 1, total_lines do
-    local line = vim.api.nvim_buf_get_lines(bufnr, i - 1, i, false)[1]
-    if line:match '^```' then
-      end_line = i
-      break
-    end
-  end
-
-  -- Make sure the block is valid and exclude the backtick lines
-  if start_line and end_line and (start_line + 1) < end_line then
-    -- Select between the backticks
-    vim.api.nvim_win_set_cursor(0, { start_line + 1, 0 })
-    vim.cmd 'normal! V'
-    vim.api.nvim_win_set_cursor(0, { end_line - 1, 0 })
-    vim.cmd 'MagmaEvaluateVisual'
-  else
-    print 'Could not find valid code block between triple backticks.'
-  end
-end
-
 return {
   {
-    --backend
-    'dccsillag/magma-nvim',
+    'benlubas/molten-nvim',
+    version = '^1.0.0',
+    lazy = false,
     build = ':UpdateRemotePlugins',
-    config = function()
-      vim.cmd 'let g:magma_automatically_open_output = v:true'
-      vim.cmd 'let g:magma_output_window_borders= v:true'
-      vim.cmd 'let g:magma_image_provider="kitty"'
-
-      vim.keymap.set('n', '<localleader>mp', ':MagmaEvaluateOperator<CR>', { silent = true })
-      vim.keymap.set('n', '<localleader>ml', ':MagmaEvaluateLine<CR>', { silent = true })
-      vim.keymap.set('x', '<localleader>mv', ':<C-u>MagmaEvaluateVisual<CR>', { silent = true })
-      vim.keymap.set('n', '<localleader>mc', ':MagmaReevaluateCell<CR>', { silent = true })
-      vim.keymap.set('n', '<localleader>md', ':MagmaDelete<CR>', { silent = true })
-      vim.keymap.set('n', '<localleader>mo', ':MagmaShowOutput<CR>', { silent = true })
-      vim.keymap.set('n', '<localleader>mi', ':MagmaInit<CR>', { silent = true })
-      vim.keymap.set('n', '<localleader>mb', RunMagmaBlock, { desc = 'Run magma block between backticks.' })
+    init = function()
+      vim.g.molten_image_provider = 'image.nvim'
+      vim.g.molten_output_win_max_height = 20
+      vim.g.molten_auto_open_output = false
+      vim.g.molten_virt_text_output = true
     end,
-    ft = { 'python', 'julia', 'markdown' },
+    -- config = function()
+    --   vim.keymap.set('n', '<localleader>mi', ':MoltenInit<CR>', { silent = true, desc = 'Molten init' })
+    --   vim.keymap.set('n', '<localleader>ml', ':MoltenEvaluateLine<CR>', { silent = true, desc = 'Molten eval line' })
+    --   vim.keymap.set('v', '<localleader>mv', ':<C-u>MoltenEvaluateVisual<CR>', { silent = true, desc = 'Molten eval visual' })
+    --   vim.keymap.set('n', '<localleader>mo', ':MoltenShowOutput<CR>', { silent = true, desc = 'Molten show output' })
+    --   vim.keymap.set('n', '<localleader>mr', ':MoltenReevaluateCell<CR>', { silent = true, desc = 'Molten re-eval cell' })
+    --   vim.keymap.set('n', '<localleader>mx', ':MoltenInterrupt<CR>', { silent = true, desc = 'Molten interrupt' })
+    --   vim.keymap.set('n', '<localleader>mR', ':MoltenRestart<CR>', { silent = true, desc = 'Molten restart' })
+    --   vim.keymap.set('n', '<localleader>mI', ':MoltenInfo<CR>', { silent = true, desc = 'Molten info' })
+    -- end,
+  },
+
+  {
+    '3rd/image.nvim',
+    opts = {
+      backend = 'kitty',
+      processor = 'magick_cli',
+      integrations = {
+        markdown = {
+          enabled = true,
+          clear_in_insert_mode = false,
+          download_remote_images = true,
+          only_render_image_at_cursor = false,
+          floating_windows = false,
+          filetypes = { 'markdown', 'quarto' },
+        },
+      },
+      max_width = 100,
+      max_height = 12,
+      max_height_window_percentage = math.huge,
+      max_width_window_percentage = math.huge,
+      window_overlap_clear_enabled = true,
+      window_overlap_clear_ft_ignore = { 'cmp_menu', 'cmp_docs', '' },
+    },
   },
   {
-    --frontend
-    'goerz/jupytext.nvim',
-    version = '0.2.0',
-    opts = {
-      jupytext = 'jupytext',
-      format = 'markdown',
-      update = true,
-      -- filetype = require('jupytext').get_filetype,
-      -- new_template = require('jupytext').default_new_template(),
-      sync_patterns = { '*.md', '*.py', '*.jl', '*.R', '*.Rmd', '*.qmd' },
-      autosync = true,
-      handle_url_schemes = true,
+    'quarto-dev/quarto-nvim',
+    ft = { 'quarto', 'markdown' },
+    dependencies = {
+      'jmbuhr/otter.nvim',
+      'nvim-treesitter/nvim-treesitter',
     },
+    opts = {
+      lspFeatures = {
+        enabled = true,
+        chunks = 'all',
+        languages = { 'python' },
+        diagnostics = {
+          enabled = true,
+          triggers = { 'BufWritePost' },
+        },
+        completion = {
+          enabled = true,
+        },
+      },
+      codeRunner = {
+        enabled = true,
+        default_method = 'molten',
+      },
+    },
+    config = function(_, opts)
+      require('quarto').setup(opts)
+    end,
+  },
+
+  {
+    'jmbuhr/otter.nvim',
+    opts = {},
+  },
+
+  {
+    'GCBallesteros/jupytext.nvim',
+    lazy = false,
+    config = function()
+      require('jupytext').setup {
+        style = 'markdown',
+        output_extension = 'md',
+        force_ft = 'markdown',
+      }
+    end,
   },
 }

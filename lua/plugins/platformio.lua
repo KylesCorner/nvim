@@ -6,17 +6,17 @@ local function notify(msg, level)
   vim.notify(msg, level or vim.log.levels.INFO)
 end
 
-function M.find_root(bufnr)
-  bufnr = bufnr or 0
-  local bufname = vim.api.nvim_buf_get_name(bufnr)
-  if bufname == '' then
-    return nil
-  end
-
-  local start = vim.fs.dirname(bufname)
-  local ini = vim.fs.find('platformio.ini', { upward = true, path = start })[1]
-  return ini and vim.fs.dirname(ini) or nil
-end
+-- function M.find_root(bufnr)
+--   bufnr = bufnr or 0
+--   local bufname = vim.api.nvim_buf_get_name(bufnr)
+--   if bufname == '' then
+--     return nil
+--   end
+--
+--   local start = vim.fs.dirname(bufname)
+--   local ini = vim.fs.find('platformio.ini', { upward = true, path = start })[1]
+--   return ini and vim.fs.dirname(ini) or nil
+-- end
 
 function M.get_envs(root)
   if not root then
@@ -65,8 +65,8 @@ function M.set_env(root, env)
   end
 end
 
-function M.select_env()
-  local root = M.find_root(0)
+function M.select_env(bufnr)
+  local root = M.find_root(bufnr or 0)
   if not root then
     notify('No platformio.ini found for this buffer', vim.log.levels.ERROR)
     return
@@ -83,7 +83,7 @@ function M.select_env()
     format_item = function(item)
       local current = M.get_current_env(root)
       if item == current then
-        return item .. '  [current]'
+        return item .. ' [current]'
       end
       return item
     end,
@@ -97,8 +97,8 @@ function M.select_env()
   end)
 end
 
-function M.show_env()
-  local root = M.find_root(0)
+function M.show_env(bufnr)
+  local root = M.find_root(bufnr or 0)
   if not root then
     notify('No platformio.ini found for this buffer', vim.log.levels.ERROR)
     return
@@ -109,6 +109,15 @@ function M.show_env()
     notify('Current PlatformIO env: ' .. env)
   else
     notify('No PlatformIO env selected', vim.log.levels.WARN)
+  end
+end
+
+function M.show_root(bufnr)
+  local root = M.find_root(bufnr or 0)
+  if root then
+    notify('PlatformIO root: ' .. root)
+  else
+    notify('No platformio.ini found for this buffer', vim.log.levels.ERROR)
   end
 end
 
@@ -137,14 +146,17 @@ end
 
 local function build_pio_cmd(subcmd, root)
   local env = M.get_current_env(root)
+  local cmd = 'pio ' .. subcmd
+
   if env and env ~= '' then
-    return 'pio ' .. subcmd .. ' -e ' .. vim.fn.shellescape(env)
+    cmd = cmd .. ' -e ' .. vim.fn.shellescape(env)
   end
-  return 'pio ' .. subcmd
+
+  return cmd
 end
 
-function M.run(subcmd, title)
-  local root = M.find_root(0)
+function M.run(subcmd, title, bufnr)
+  local root = M.find_root(bufnr or 0)
   if not root then
     notify('No platformio.ini found for this buffer', vim.log.levels.ERROR)
     return
@@ -152,6 +164,26 @@ function M.run(subcmd, title)
 
   local cmd = build_pio_cmd(subcmd, root)
   open_term(cmd, root, title)
+end
+
+function M.build(bufnr)
+  M.run('run', 'PlatformIO build', bufnr)
+end
+
+function M.upload(bufnr)
+  M.run('run -t upload', 'PlatformIO upload', bufnr)
+end
+
+function M.monitor(bufnr)
+  M.run('device monitor', 'PlatformIO monitor', bufnr)
+end
+
+function M.clean(bufnr)
+  M.run('run -t clean', 'PlatformIO clean', bufnr)
+end
+
+function M.compiledb(bufnr)
+  M.run('run -t compiledb', 'PlatformIO compiledb', bufnr)
 end
 
 return M

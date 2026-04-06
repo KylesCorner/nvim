@@ -1,7 +1,7 @@
 -- init.lua
 -- Author: Kyle Krstulich
 -- Date: 2025-05-08
-
+--
 return {
   require 'core.lsp',
   require 'core.debug',
@@ -18,4 +18,5 @@ return {
   -- require 'core.which-key',
   require 'core.todo-comments',
   require 'core.mini',
+  -- require 'core.minuet-ai',
 }

@@ -1,4 +1,6 @@
 -- /ftplugin/python.lua
+require 'plugins.jupyter_notebook'
+require 'keymaps.molten-keymaps'
 
 -- Set indentation settings
 vim.opt.breakindent = true

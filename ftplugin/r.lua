@@ -1,3 +1,4 @@
+require 'lua.plugins.r'
 -- R config
 -- Set these before the plugin is loaded (e.g., in init.lua or lazy config)
 vim.g.R_assign = 0
