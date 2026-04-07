@@ -41,7 +41,7 @@ features.
 - Autocompletion, live compilation
 
 ### 📓 Jupyter Notebooks (`.ipynb`)
-- Interactive cells and outputs with `magma-nvim`
+- Interactive cells and outputs with `molten-nvim`
 - Compatible with Python and R cells
 - Inline plotting and evaluation
 
@@ -55,13 +55,26 @@ features.
 - Plugin: `rust-tools.nvim` for inlay hints, cargo commands
 - Debugging: `lldb-vscode` via `nvim-dap`
 
+### 🔌 PlatformIO
+- Embedded development support for PlatformIO-based projects
+- Project detection through `platformio.ini`
+- LSP support via `clangd` for C and C++ code intelligence
+- Build, upload, and monitor workflows integrated into Neovim
+- Helpful for microcontroller projects such as Arduino, ESP32, RP2040, and similar boards
+- Works well with multi-environment PlatformIO setups
+- Custom project-aware behavior can be added for keymaps, commands, and filetype settings
+
 ## 🗝️ Keybindings
 
 Custom leader bindings (`<leader>`) and filetype-specific mappings for:
-- Code evaluation
-- File running/building
-- Terminal toggles
+- General editor actions and workflow shortcuts
+- File running, building, and terminal toggles
+
+Custom local leader bindings (`<localleader>`) for language-specific actions such as:
+- Code evaluation and notebook cell execution
+- Quarto, Markdown, and Jupyter workflows
 - R chunk execution and data inspection
+- REPL, debugger, and tool-specific commands
 
 ## 🚀 Getting Started
 
