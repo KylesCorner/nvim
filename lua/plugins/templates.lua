@@ -1,53 +1,83 @@
 local M = {}
 
 local AUTHOR_NAME = 'Kyle Krstulich'
--- Get templates matching the current filetype
-local function get_templates_for_filetype(filetype)
-  -- Get the path to the templates directory
-  local template_dir = vim.fn.stdpath 'config' .. '/templates/'
-  print(template_dir)
 
-  -- Initialize an empty table to store matching templates
+local function get_template_dir()
+  return vim.fn.stdpath 'config' .. '/templates'
+end
+
+local function scan_templates()
+  local template_dir = get_template_dir()
   local templates = {}
 
-  -- Check if the template directory exists
   if vim.fn.isdirectory(template_dir) == 0 then
-    print("Template directory doesn't exist: " .. template_dir)
+    vim.notify("Template directory doesn't exist: " .. template_dir, vim.log.levels.WARN)
     return templates
   end
 
-  -- Use lua's asynchronous fs_scandir to read files in the directory
   local handle = vim.loop.fs_scandir(template_dir)
   if not handle then
-    print('Error scanning template directory: ' .. template_dir)
+    vim.notify('Error scanning template directory: ' .. template_dir, vim.log.levels.ERROR)
     return templates
   end
 
-  -- Iterate through the directory's contents
   while true do
-    -- Get the next file or directory in the scanned handle
     local name, type = vim.loop.fs_scandir_next(handle)
-
-    -- If no more files, break the loop
     if not name then
       break
     end
-
-    -- Check if it's a file and matches the template pattern for the current filetype
-    if type == 'file' and name:match('.*%.' .. filetype .. '$') then
-      -- Add the matching template filename to the templates table
+    if type == 'file' then
       table.insert(templates, name)
     end
   end
 
-  -- Return the list of matching templates
   return templates
 end
 
--- Replace placeholders in the template and insert it into the buffer
+local function get_candidate_keys()
+  local filename = vim.fn.expand '%:t'
+  local ext = vim.fn.expand '%:e'
+  local filetype = vim.bo.filetype
+
+  local keys = {}
+
+  -- Most specific: exact filename
+  if filename ~= '' then
+    table.insert(keys, filename)
+  end
+
+  -- Common: extension-based templates
+  if ext ~= '' then
+    table.insert(keys, ext)
+  end
+
+  -- Fallback: filetype-based templates
+  if filetype ~= '' and filetype ~= ext then
+    table.insert(keys, filetype)
+  end
+
+  return keys
+end
+
+local function get_templates_for_buffer()
+  local all_templates = scan_templates()
+  local keys = get_candidate_keys()
+  local matches = {}
+
+  for _, template in ipairs(all_templates) do
+    for _, key in ipairs(keys) do
+      if template == key or template:match('%.' .. vim.pesc(key) .. '$') then
+        table.insert(matches, template)
+        break
+      end
+    end
+  end
+
+  return matches
+end
+
 local function insert_template(template_file)
-  local template_dir = vim.fn.stdpath 'config' .. '/templates'
-  local fullpath = template_dir .. '/' .. template_file
+  local fullpath = get_template_dir() .. '/' .. template_file
   local filename = vim.fn.expand '%:t'
   local lines = {}
 
@@ -56,33 +86,31 @@ local function insert_template(template_file)
     table.insert(lines, line)
   end
 
-  -- Insert the template lines into the empty buffer
   vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
 end
 
--- Prompt user to choose a template and insert it
 function M.prompt_and_insert_template()
-  -- Only act on empty buffers (new files)
-  if vim.fn.line '$' > 1 then
+  if vim.fn.line '$' > 1 or vim.fn.getline(1) ~= '' then
     return
   end
 
-  local filetype = vim.bo.filetype
-  local templates = get_templates_for_filetype(filetype)
+  local templates = get_templates_for_buffer()
 
   if #templates == 0 then
-    print('No ' .. filetype .. ' templates are found.')
+    vim.notify('No matching templates found', vim.log.levels.INFO)
     return
   end
+
   if #templates == 1 then
     insert_template(templates[1])
-  else
-    vim.ui.select(templates, { prompt = 'Choose a template:' }, function(choice)
-      if choice then
-        insert_template(choice)
-      end
-    end)
+    return
   end
+
+  vim.ui.select(templates, { prompt = 'Choose a template:' }, function(choice)
+    if choice then
+      insert_template(choice)
+    end
+  end)
 end
 
 return M

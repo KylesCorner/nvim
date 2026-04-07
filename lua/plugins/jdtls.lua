@@ -64,6 +64,7 @@ end
 
 local config = {
   cmd = { path_to_jdtls },
+  lazy = true,
   root_dir = require('jdtls.setup').find_root { 'gradlew', '.git', 'mvnw', 'pom.xml', 'build.gradle' },
   settings = {
     java = {

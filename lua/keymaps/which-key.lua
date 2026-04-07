@@ -64,6 +64,7 @@ return {
         { '<localleader>e', group = '[e]dit utilities' },
         { '<localleader>o', group = '[o]bsidian' },
         { '<localleader>q', group = '[q]uatro' },
+        { '<localleader>a', group = 'M[a]rkview' },
       },
     },
   },

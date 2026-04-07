@@ -5,7 +5,7 @@ return {
   {
     'R-nvim/R.nvim',
     -- Only required if you also set defaults.lazy = true
-    lazy = false,
+    lazy = true,
     -- R.nvim is still young and we may make some breaking changes from time
     -- to time (but also bug fixes all the time). If configuration stability
     -- is a high priority for you, pin to the latest minor version, but unpin
@@ -140,6 +140,7 @@ return {
   },
   {
     'R-nvim/cmp-r',
+    ft = { 'r', 'rmd', 'quarto' },
     {
       'hrsh7th/nvim-cmp',
       'hrsh7th/cmp-buffer',

@@ -1,22 +1,16 @@
 local M = {}
 
+local util = require 'utils'
+
 M.state = {}
 
 local function notify(msg, level)
   vim.notify(msg, level or vim.log.levels.INFO)
 end
 
--- function M.find_root(bufnr)
---   bufnr = bufnr or 0
---   local bufname = vim.api.nvim_buf_get_name(bufnr)
---   if bufname == '' then
---     return nil
---   end
---
---   local start = vim.fs.dirname(bufname)
---   local ini = vim.fs.find('platformio.ini', { upward = true, path = start })[1]
---   return ini and vim.fs.dirname(ini) or nil
--- end
+function M.find_root(bufnr)
+  return util.find_pio_root(bufnr or 0)
+end
 
 function M.get_envs(root)
   if not root then
@@ -184,6 +178,61 @@ end
 
 function M.compiledb(bufnr)
   M.run('run -t compiledb', 'PlatformIO compiledb', bufnr)
+end
+
+function M.setup_keymaps(bufnr)
+  bufnr = bufnr or 0
+
+  if not M.find_root(bufnr) then
+    return
+  end
+
+  local function map(lhs, rhs, desc)
+    vim.keymap.set('n', lhs, rhs, { buffer = bufnr, desc = desc, silent = true })
+  end
+
+  map('<localleader>pe', function()
+    M.select_env(bufnr)
+  end, 'PIO Select Env')
+
+  map('<localleader>ps', function()
+    M.show_env(bufnr)
+  end, 'PIO Show Env')
+
+  map('<localleader>pb', function()
+    M.build(bufnr)
+  end, 'PIO Build')
+
+  map('<localleader>pu', function()
+    M.upload(bufnr)
+  end, 'PIO Upload')
+
+  map('<localleader>pm', function()
+    M.monitor(bufnr)
+  end, 'PIO Monitor')
+
+  map('<localleader>pc', function()
+    M.clean(bufnr)
+  end, 'PIO Clean')
+
+  map('<localleader>pd', function()
+    M.compiledb(bufnr)
+  end, 'PIO Compile DB')
+
+  map('<localleader>pt', function()
+    M.show_root(bufnr)
+  end, 'PIO Project Root')
+end
+
+function M.setup()
+  local augroup = vim.api.nvim_create_augroup('PlatformIOKeymaps', { clear = true })
+
+  vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+    group = augroup,
+    callback = function(args)
+      M.setup_keymaps(args.buf)
+    end,
+  })
 end
 
 return M

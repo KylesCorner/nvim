@@ -122,14 +122,25 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Templates
 -- Trigger when opening a new file (e.g., `nvim filename.tex`)
+-- vim.api.nvim_create_autocmd('BufNewFile', {
+--   callback = function()
+--     if vim.fn.line '$' == 1 and vim.fn.getline(1) == '' then
+--       -- File template support
+--       M = require 'plugins.templates'
+--       vim.defer_fn(function()
+--         M.prompt_and_insert_template()
+--       end, 100)
+--     end
+--   end,
+-- })
 vim.api.nvim_create_autocmd('BufNewFile', {
-  callback = function()
-    if vim.fn.line '$' == 1 and vim.fn.getline(1) == '' then
-      -- File template support
-      M = require 'plugins.templates'
-      vim.defer_fn(function()
-        M.prompt_and_insert_template()
-      end, 100)
+  callback = function(args)
+    local is_empty = vim.api.nvim_buf_line_count(args.buf) == 1 and vim.api.nvim_buf_get_lines(args.buf, 0, 1, false)[1] == ''
+
+    if is_empty then
+      vim.schedule(function()
+        require('plugins.templates').prompt_and_insert_template()
+      end)
     end
   end,
 })

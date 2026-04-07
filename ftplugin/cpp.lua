@@ -1,1 +1,1 @@
-require 'keymaps/platformio-keymaps'
+require('plugins.platformio').setup()
